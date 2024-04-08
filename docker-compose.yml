@@ -1,0 +1,41 @@
+version: '3'
+services:
+ backend:
+  container_name: app_pal
+  image: ggmartinez/laravel:9-php7
+  restart: unless-stopped
+  tty: true
+  ports:
+    - 8000:8000
+  volumes:
+    - ./app:/app
+    - ./development/php/laravel.ini:/usr/local/etc/php/conf.d/laravel.ini
+
+ frontend:
+  image: nginx:alpine
+  container_name: web_pal 
+  restart: unless-stopped
+  tty: true
+  ports:
+   - 80:80
+   - 443:443
+  volumes:
+   - ./frontend/www:/var/www/public 
+   - ./development/nginx/conf.d/:/etc/nginx/conf.d/
+
+ db:
+  container_name: db_pal
+  image: mysql:5.7.32
+  restart: unless-stopped
+  tty: true
+  ports:
+   - 3306:3306
+  environment:
+   MYSQL_DATABASE: pal
+   MYSQL_ROOT_PASSWORD: root1234
+   SERVICE_TAGS: dev
+   SERVICE_NAME: mysql
+  volumes:
+   - ./mysql/data:/var/lib/mysql/
+   - ./development/mysql/my.cnf:/etc/mysql/my.cnf
+
